@@ -1,30 +1,22 @@
 package chapter_3
 
 import AbstractPostgreSqlTest
-import chapter_2.CityTable
-import chapter_2.CityTable.location
-import chapter_2.CityTable.name
-import chapter_2.Point
-import chapter_2.WeatherTable
-import chapter_2.insertDummyData
-import chapter_2.point
+import CityTable
+import Point
+import WeatherTable
+import insertDummyData
+import point
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.Table
-import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.greater
-import org.jetbrains.exposed.v1.core.minus
 import org.jetbrains.exposed.v1.javatime.date
 import kotlin.test.Test
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
-import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.update
 import withTransaction
-import java.time.LocalDate
 
 // https://www.postgresql.org/docs/current/tutorial-views.html
-class Chapter2_9 : AbstractPostgreSqlTest() {
+class Chapter3_2 : AbstractPostgreSqlTest() {
 
     @Test
     fun Deletions() = withTransaction {
@@ -54,7 +46,7 @@ class Chapter2_9 : AbstractPostgreSqlTest() {
 private fun ResultRow.printRow() {
     println("${this[Myview.name]}, ${this[Myview.date]}, ${this[Myview.tempLo]} to ${this[Myview.tempHi]}, ${this[Myview.location]}")
 }
-object Myview : Table("myview") {
+private object Myview : Table("myview") {
     val tempLo = integer("temp_lo")
     val tempHi = integer("temp_hi")
     val prcp = float("prcp")

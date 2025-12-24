@@ -1,6 +1,8 @@
 package chapter_2
 
 import AbstractPostgreSqlTest
+import CityTable
+import WeatherTable
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import withTransaction
 import kotlin.test.Test

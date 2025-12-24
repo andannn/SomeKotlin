@@ -1,6 +1,8 @@
 package chapter_2
 
 import AbstractPostgreSqlTest
+import WeatherTable
+import insertDummyData
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.greater
 import org.jetbrains.exposed.v1.core.minus
