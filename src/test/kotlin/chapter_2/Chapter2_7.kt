@@ -8,83 +8,85 @@ import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.max
-import kotlin.test.Test
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.select
 import withTransaction
+import kotlin.test.Test
 
 // https://www.postgresql.org/docs/current/tutorial-agg.html
 class Chapter2_7 : AbstractPostgreSqlTest() {
-
     @Test
-    fun `Aggregate Functions`() = withTransaction {
-        SchemaUtils.create(WeatherTable)
-        WeatherTable.insertDummyData()
+    fun `Aggregate Functions`() =
+        withTransaction {
+            SchemaUtils.create(WeatherTable)
+            WeatherTable.insertDummyData()
 
-        // select max low temp
-        val maxTempExpression = WeatherTable.tempLo.max()
-        WeatherTable.select(maxTempExpression)
-            .forEach {
-                println(it[maxTempExpression])
-            }
+            // select max low temp
+            val maxTempExpression = WeatherTable.tempLo.max()
+            WeatherTable
+                .select(maxTempExpression)
+                .forEach {
+                    println(it[maxTempExpression])
+                }
 
-        // select max low temp by city
-        WeatherTable.select(WeatherTable.city)
-            .where {
-                WeatherTable.tempLo inList WeatherTable.select(maxTempExpression)
-                    .mapNotNull { it[maxTempExpression] }
-            }
-            .forEach { row ->
-                println("Hottest City: ${row[WeatherTable.city]}")
-            }
+            // select max low temp by city
+            WeatherTable
+                .select(WeatherTable.city)
+                .where {
+                    WeatherTable.tempLo inList
+                        WeatherTable
+                            .select(maxTempExpression)
+                            .mapNotNull { it[maxTempExpression] }
+                }.forEach { row ->
+                    println("Hottest City: ${row[WeatherTable.city]}")
+                }
 
-        val countExpr = WeatherTable.city.count()
-        WeatherTable.select(
-            WeatherTable.city,
-            countExpr,
-            maxTempExpression
-        )
-            .groupBy(WeatherTable.city)
-            .forEach { row ->
-                val city = row[WeatherTable.city]
-                val count = row[countExpr]
-                val max = row[maxTempExpression]
+            val countExpr = WeatherTable.city.count()
+            WeatherTable
+                .select(
+                    WeatherTable.city,
+                    countExpr,
+                    maxTempExpression,
+                ).groupBy(WeatherTable.city)
+                .forEach { row ->
+                    val city = row[WeatherTable.city]
+                    val count = row[countExpr]
+                    val max = row[maxTempExpression]
 
-                println("City: $city, Entries: $count, Max Low: $max")
-            }
+                    println("City: $city, Entries: $count, Max Low: $max")
+                }
 
-        // filter result of aggregate functions
-        WeatherTable.select(
-            WeatherTable.city,
-            countExpr,
-            maxTempExpression
-        )
-            .groupBy(WeatherTable.city)
-            .having {
-                maxTempExpression.less(40)
-            }
-            .forEach { row ->
-                val city = row[WeatherTable.city]
-                val count = row[countExpr]
-                val max = row[maxTempExpression]
+            // filter result of aggregate functions
+            WeatherTable
+                .select(
+                    WeatherTable.city,
+                    countExpr,
+                    maxTempExpression,
+                ).groupBy(WeatherTable.city)
+                .having {
+                    maxTempExpression.less(40)
+                }.forEach { row ->
+                    val city = row[WeatherTable.city]
+                    val count = row[countExpr]
+                    val max = row[maxTempExpression]
 
-                println("City: $city, Entries: $count, Max Low: $max")
-            }
+                    println("City: $city, Entries: $count, Max Low: $max")
+                }
 
-        // Like match
-        WeatherTable.select(
-            WeatherTable.city,
-            countExpr,
-            maxTempExpression
-        )
-            .where { WeatherTable.city like "S%" }
-            .groupBy(WeatherTable.city)
-            .forEach { row ->
-                val city = row[WeatherTable.city]
-                val count = row[countExpr]
-                val max = row[maxTempExpression]
+            // Like match
+            WeatherTable
+                .select(
+                    WeatherTable.city,
+                    countExpr,
+                    maxTempExpression,
+                ).where { WeatherTable.city like "S%" }
+                .groupBy(WeatherTable.city)
+                .forEach { row ->
+                    val city = row[WeatherTable.city]
+                    val count = row[countExpr]
+                    val max = row[maxTempExpression]
 
-                println("City: $city, Entries: $count, Max Low: $max")
-            }
-    }
+                    println("City: $city, Entries: $count, Max Low: $max")
+                }
+        }
 }

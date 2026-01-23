@@ -18,10 +18,12 @@ object CityTable : Table("cities") {
     val location = point("location")
 }
 
-data class Point(val x: Float, val y: Float)
+data class Point(
+    val x: Float,
+    val y: Float,
+)
 
-fun Table.point(name: String): Column<Point> =
-    registerColumn(name, PostgresPointColumnType())
+fun Table.point(name: String): Column<Point> = registerColumn(name, PostgresPointColumnType())
 
 class PostgresPointColumnType : ColumnType<Point>() {
     override fun sqlType(): String = "point"
@@ -30,7 +32,7 @@ class PostgresPointColumnType : ColumnType<Point>() {
         val str = value.toString()
         return try {
             val content = str.trim('(', ')') // 去掉首尾的括号 -> "10.5, 20.5"
-            val parts = content.split(",")   // 分割 -> ["10.5", " 20.5"]
+            val parts = content.split(",") // 分割 -> ["10.5", " 20.5"]
             Point(parts[0].trim().toFloat(), parts[1].trim().toFloat())
         } catch (e: Exception) {
             error("无法解析 Point 类型: $str")
@@ -42,12 +44,10 @@ class PostgresPointColumnType : ColumnType<Point>() {
         return "(${value.x},${value.y})"
     }
 
-    override fun nonNullValueToString(value: Point): String {
-        return "'(${value.x},${value.y})'"
-    }
+    override fun nonNullValueToString(value: Point): String = "'(${value.x},${value.y})'"
 }
 
-fun WeatherTable.insertDummyData()  {
+fun WeatherTable.insertDummyData() {
     WeatherTable.insert {
         it[city] = "San Francisco"
         it[tempLo] = 46

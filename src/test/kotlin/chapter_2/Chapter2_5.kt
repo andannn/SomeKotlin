@@ -10,28 +10,28 @@ import org.jetbrains.exposed.v1.core.div
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greater
 import org.jetbrains.exposed.v1.core.plus
-import kotlin.test.Test
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import withTransaction
+import kotlin.test.Test
 
 // https://www.postgresql.org/docs/current/tutorial-select.html
 class Chapter2_5 : AbstractPostgreSqlTest() {
-
     @Test
     fun `Querying a Table`() {
         withTransaction {
             SchemaUtils.create(WeatherTable)
             WeatherTable.insertDummyData()
             // select a slice.
-            WeatherTable.select(
-                WeatherTable.city
-            ).forEach { row ->
-                val city = row[WeatherTable.city]
+            WeatherTable
+                .select(
+                    WeatherTable.city,
+                ).forEach { row ->
+                    val city = row[WeatherTable.city]
 
-                println(city)
-            }
+                    println(city)
+                }
 
             // select calculated row.
             val tempAvg = (WeatherTable.tempHi + WeatherTable.tempLo) / 2
@@ -43,11 +43,13 @@ class Chapter2_5 : AbstractPostgreSqlTest() {
             }
 
             // select with selector
-            WeatherTable.selectAll().where {
-                WeatherTable.city eq "San Francisco" and (WeatherTable.prcp greater 0f)
-            }.forEach { row ->
-                row.printRow()
-            }
+            WeatherTable
+                .selectAll()
+                .where {
+                    WeatherTable.city eq "San Francisco" and (WeatherTable.prcp greater 0f)
+                }.forEach { row ->
+                    row.printRow()
+                }
 
             // select with order
             // In this example, the sort order isn't fully specified,
@@ -57,22 +59,26 @@ class Chapter2_5 : AbstractPostgreSqlTest() {
             }
 
             // order will not change
-            WeatherTable.selectAll().orderBy(
-                WeatherTable.city to SortOrder.ASC,
-                WeatherTable.tempLo to SortOrder.ASC
-            ).forEach { row ->
-                row.printRow()
-            }
+            WeatherTable
+                .selectAll()
+                .orderBy(
+                    WeatherTable.city to SortOrder.ASC,
+                    WeatherTable.tempLo to SortOrder.ASC,
+                ).forEach { row ->
+                    row.printRow()
+                }
 
             // Duplicated row is removed.
-            WeatherTable.select(WeatherTable.city)
+            WeatherTable
+                .select(WeatherTable.city)
                 .withDistinct()
                 .forEach {
                     println(it[WeatherTable.city])
                 }
 
             // distinct with order
-            WeatherTable.select(WeatherTable.city)
+            WeatherTable
+                .select(WeatherTable.city)
                 .withDistinct()
                 .orderBy(WeatherTable.city)
                 .forEach {
@@ -82,7 +88,8 @@ class Chapter2_5 : AbstractPostgreSqlTest() {
     }
 }
 
-
 private fun ResultRow.printRow() {
-    println("city: ${this[WeatherTable.city]}, tempLo: ${this[WeatherTable.tempLo]}, tempHi: ${this[WeatherTable.tempHi]}, prcp: ${this[WeatherTable.prcp]}, date: ${this[WeatherTable.date]}")
+    println(
+        "city: ${this[WeatherTable.city]}, tempLo: ${this[WeatherTable.tempLo]}, tempHi: ${this[WeatherTable.tempHi]}, prcp: ${this[WeatherTable.prcp]}, date: ${this[WeatherTable.date]}",
+    )
 }

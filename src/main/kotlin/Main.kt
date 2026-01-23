@@ -15,9 +15,13 @@ object Tasks : Table("tasks") {
     val description = varchar("description", MAX_VARCHAR_LENGTH).nullable()
     val isCompleted = bool("completed").default(false)
     val assigned = varchar("assigned", length = MAX_VARCHAR_LENGTH)
-    val withComment = varchar("withComment", length = MAX_VARCHAR_LENGTH).nullable().withDefinition("COMMENT", stringLiteral("Test Comment"))
+    val withComment =
+        varchar(
+            "withComment",
+            length = MAX_VARCHAR_LENGTH,
+        ).nullable().withDefinition("COMMENT", stringLiteral("Test Comment"))
     val email = varchar("email", length = MAX_VARCHAR_LENGTH).nullable().default("xxx@gmail.com")
-    val invisible =  varchar("invisible", length = MAX_VARCHAR_LENGTH).nullable().withDefinition("INVISIBLE")
+    val invisible = varchar("invisible", length = MAX_VARCHAR_LENGTH).nullable().withDefinition("INVISIBLE")
 }
 
 fun main() {

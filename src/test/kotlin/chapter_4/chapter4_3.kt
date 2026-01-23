@@ -13,25 +13,27 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class chapter4_3 : AbstractPostgreSqlTest() {
-
     @Test
-    fun `exposed buildIn function`() = withTransaction {
-        SchemaUtils.create(WeatherTable)
+    fun `exposed buildIn function`() =
+        withTransaction {
+            SchemaUtils.create(WeatherTable)
 
-        WeatherTable.insertDummyData()
+            WeatherTable.insertDummyData()
 
-        val cityLowerCase = WeatherTable.city.lowerCase()
-        WeatherTable.select(cityLowerCase)
-            .where { WeatherTable.city eq "San Francisco" }
-            .forEach {
-                assertEquals("san francisco", it[cityLowerCase])
-            }
+            val cityLowerCase = WeatherTable.city.lowerCase()
+            WeatherTable
+                .select(cityLowerCase)
+                .where { WeatherTable.city eq "San Francisco" }
+                .forEach {
+                    assertEquals("san francisco", it[cityLowerCase])
+                }
 
-        val citySubstring = WeatherTable.city.substring(start = 1, length = 3)
-        WeatherTable.select(citySubstring)
-            .where { WeatherTable.city eq "San Francisco" }
-            .forEach {
-                assertEquals("San", it[citySubstring])
-            }
-    }
+            val citySubstring = WeatherTable.city.substring(start = 1, length = 3)
+            WeatherTable
+                .select(citySubstring)
+                .where { WeatherTable.city eq "San Francisco" }
+                .forEach {
+                    assertEquals("San", it[citySubstring])
+                }
+        }
 }

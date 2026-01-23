@@ -14,29 +14,28 @@ import kotlin.test.assertFails
 
 // https://www.postgresql.org/docs/current/tutorial-fk.html
 class Chapter3_3 : AbstractPostgreSqlTest() {
-
     @Test
-    fun `Foreign Keys`() = withTransaction {
-        SchemaUtils.create(MyWeatherTable, MyCityTable)
+    fun `Foreign Keys`() =
+        withTransaction {
+            SchemaUtils.create(MyWeatherTable, MyCityTable)
 
-        MyCityTable.insert {
-            it[name] = "San Francisco"
-            it[location] = Point(-194f, 53f)
-        }
+            MyCityTable.insert {
+                it[name] = "San Francisco"
+                it[location] = Point(-194f, 53f)
+            }
 
-        // Referential integrity constraint violation: "fk_weather_city__name: public.weather FOREIGN KEY(city) REFERENCES public.cities(name) ('Hayward')";
-        assertFails {
-            MyWeatherTable.insert {
-                it[city] = "Hayward"
-                it[tempLo] = 37
-                it[tempHi] = 54
-                it[prcp] = 0f
-                it[date] = LocalDate.of(1994, 11, 29)
+            // Referential integrity constraint violation: "fk_weather_city__name: public.weather FOREIGN KEY(city) REFERENCES public.cities(name) ('Hayward')";
+            assertFails {
+                MyWeatherTable.insert {
+                    it[city] = "Hayward"
+                    it[tempLo] = 37
+                    it[tempHi] = 54
+                    it[prcp] = 0f
+                    it[date] = LocalDate.of(1994, 11, 29)
+                }
             }
         }
-    }
 }
-
 
 private object MyWeatherTable : Table("weather") {
     val city = reference("city", MyCityTable.name)

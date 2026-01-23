@@ -4,15 +4,14 @@ import AbstractPostgreSqlTest
 import CityTable
 import Point
 import WeatherTable
-import kotlin.test.Test
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.insert
 import withTransaction
 import java.time.LocalDate
+import kotlin.test.Test
 
 // https://www.postgresql.org/docs/current/tutorial-populate.html
 class Chapter2_4 : AbstractPostgreSqlTest() {
-
     @Test
     fun `Insert Statement`() {
         withTransaction {

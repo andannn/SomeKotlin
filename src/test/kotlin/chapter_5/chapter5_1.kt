@@ -2,6 +2,4 @@ package chapter_5
 
 import AbstractPostgreSqlTest
 
-class chapter5_1 : AbstractPostgreSqlTest() {
-
-}
+class chapter5_1 : AbstractPostgreSqlTest()
