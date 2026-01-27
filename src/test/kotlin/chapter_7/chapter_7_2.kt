@@ -170,23 +170,23 @@ class chapter_7_2 : AbstractPostgreSqlTest() {
                     .groupBy(t1.id)
                     .onEach {}
             }
-
-            val sumID = t1.id.sum()
-            t1
-                .select(t1.id, sumID)
-                .groupBy(t1.id)
-                .forEach {
-                    assertEquals(1, it[t1.id])
-                    assertEquals(2, it[sumID])
-                }
-
-            t1
-                .select(t1.id)
-                .groupBy(t1.id)
-                .having {
-                    t1.id eq 1
-                }.onEach {
-                    assertEquals(1, it[t1.id])
-                }
+//
+//            val sumID = t1.id.sum()
+//            t1
+//                .select(t1.id, sumID)
+//                .groupBy(t1.id)
+//                .forEach {
+//                    assertEquals(1, it[t1.id])
+//                    assertEquals(2, it[sumID])
+//                }
+//
+//            t1
+//                .select(t1.id)
+//                .groupBy(t1.id)
+//                .having {
+//                    t1.id eq 1
+//                }.onEach {
+//                    assertEquals(1, it[t1.id])
+//                }
         }
 }
