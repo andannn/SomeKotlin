@@ -1,0 +1,39 @@
+package exposed.chapter_4
+
+import exposed.AbstractPostgreSqlTest
+import exposed.WeatherTable
+import exposed.insertDummyData
+import exposed.withTransaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.lowerCase
+import org.jetbrains.exposed.v1.core.substring
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.select
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class chapter4_3 : AbstractPostgreSqlTest() {
+    @Test
+    fun `exposed buildIn function`() =
+        withTransaction {
+            SchemaUtils.create(WeatherTable)
+
+            WeatherTable.insertDummyData()
+
+            val cityLowerCase = WeatherTable.city.lowerCase()
+            WeatherTable
+                .select(cityLowerCase)
+                .where { WeatherTable.city eq "San Francisco" }
+                .forEach {
+                    assertEquals("san francisco", it[cityLowerCase])
+                }
+
+            val citySubstring = WeatherTable.city.substring(start = 1, length = 3)
+            WeatherTable
+                .select(citySubstring)
+                .where { WeatherTable.city eq "San Francisco" }
+                .forEach {
+                    assertEquals("San", it[citySubstring])
+                }
+        }
+}
