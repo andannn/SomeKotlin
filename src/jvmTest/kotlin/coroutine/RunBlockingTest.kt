@@ -11,9 +11,6 @@ import kotlin.test.assertNotEquals
 class RunBlockingTest {
     @Test
     fun `run blocking test`() {
-        println(
-            Thread.currentThread().threadId()
-        )
         runBlocking {
             val currentInterceptor = coroutineContext[ContinuationInterceptor]
 

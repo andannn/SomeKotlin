@@ -1,6 +1,7 @@
 package exposed
 
 import org.jetbrains.exposed.v1.jdbc.Database
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 
 abstract class AbstractPostgreSqlTest {
@@ -13,6 +14,13 @@ abstract class AbstractPostgreSqlTest {
         withTransaction {
             exec("CREATE DOMAIN IF NOT EXISTS point AS VARCHAR")
             exec("CREATE DOMAIN IF NOT EXISTS point AS GEOMETRY")
+        }
+    }
+
+    @AfterTest
+    fun tearDown() {
+        withTransaction {
+            exec("DROP ALL OBJECTS")
         }
     }
 }

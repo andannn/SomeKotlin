@@ -2,10 +2,39 @@ package exposed
 
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.ColumnType
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.stringLiteral
 import org.jetbrains.exposed.v1.javatime.date
+import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.time.LocalDate
+
+const val MAX_VARCHAR_LENGTH = 128
+
+fun <T> withTransaction(block: JdbcTransaction.() -> T) {
+    transaction {
+        maxAttempts = 1
+        addLogger(StdOutSqlLogger)
+        block()
+    }
+}
+
+object Tasks : Table("tasks") {
+    val id = integer("id").autoIncrement()
+    val title = varchar("name", MAX_VARCHAR_LENGTH)
+    val description = varchar("description", MAX_VARCHAR_LENGTH).nullable()
+    val isCompleted = bool("completed").default(false)
+    val assigned = varchar("assigned", length = MAX_VARCHAR_LENGTH)
+    val withComment =
+        varchar(
+            "withComment",
+            length = MAX_VARCHAR_LENGTH,
+        ).nullable().withDefinition("COMMENT", stringLiteral("Test Comment"))
+    val email = varchar("email", length = MAX_VARCHAR_LENGTH).nullable().default("xxx@gmail.com")
+    val invisible = varchar("invisible", length = MAX_VARCHAR_LENGTH).nullable().withDefinition("INVISIBLE")
+}
 
 object WeatherTable : Table("weather") {
     val city = varchar("city", 80)
