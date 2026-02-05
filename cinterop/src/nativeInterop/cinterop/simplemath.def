@@ -1,0 +1,17 @@
+# 1. 指定生成的 Kotlin 包名
+package = my.simple.math
+
+# 2. 指定头文件
+headers = simplemath.h
+
+# 3. 告诉编译器去哪里找头文件 (compilerOpts)
+compilerOpts = -Isrc/nativeInterop/c
+
+# --- 是一条魔法分割线 ---
+# 下面的内容会直接交给链接器。
+# 【黑科技】：对于这种小型 C 源码，我们直接把 .c 文件 include 进来，
+# 这样 Kotlin 编译器编译 klib 时会顺便把 C 代码也编译了。
+# 这样你就不用自己去用 gcc 编译成 libsimplemath.a 了！
+---
+
+#include "simplemath.c"
