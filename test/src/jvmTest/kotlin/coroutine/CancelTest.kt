@@ -1,0 +1,4 @@
+package coroutine
+
+class CancelTest {
+}

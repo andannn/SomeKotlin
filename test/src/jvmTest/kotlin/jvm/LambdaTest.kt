@@ -1,0 +1,4 @@
+package jvm
+
+class Lambda {
+}
