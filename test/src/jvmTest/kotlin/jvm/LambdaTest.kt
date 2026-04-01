@@ -1,3 +1,3 @@
 package jvm
 
-class Lambd
+class Lambda
