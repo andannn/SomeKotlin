@@ -19,7 +19,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "SomeKotlin"
 
-//include(":test")
-//include(":cinterop-def")
-//include(":bundled-c-source")
+include(":test")
+include(":cinterop-def")
+include(":bundled-c-source")
 include(":kotlin-js")
